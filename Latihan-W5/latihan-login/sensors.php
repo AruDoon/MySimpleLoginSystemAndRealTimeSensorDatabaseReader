@@ -5,64 +5,28 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'user') {
     exit();
 }
 
+// DB connection
+$servername = "localhost";
+$username_db = "root";
+$password_db = "";
+$dbname = "web";
+$pdo = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8", $username_db, $password_db);
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
 // Helper function for status
 function getStatusIndicator($status) {
     if ($status == 'online') {
         return '<span class="status-online"></span>Online';
     } elseif ($status == 'warning') {
         return '<span class="status-warning"></span>Warning';
+    } elseif ($status == 'offline') {
+        return '<span class="status-offline"></span>Offline';
     }
     return '<span class="status-warning"></span>Offline';
 }
 
-// Hardcoded dummy sensor data (same for all users, from your DB)
-$sensors = [
-    [
-        'id' => 1,
-        'user_id' => 2,
-        'sensor_name' => 'IMU BNO055',
-        'value' => '5.23',
-        'unit' => 'deg',
-        'status' => 'online',
-        'created_at' => '2025-10-30 19:22:24'
-    ],
-    [
-        'id' => 2,
-        'user_id' => 2,
-        'sensor_name' => 'Ultrasonic HC-SR04',
-        'value' => '25.30',
-        'unit' => 'cm',
-        'status' => 'online',
-        'created_at' => '2025-10-30 19:22:24'
-    ],
-    [
-        'id' => 3,
-        'user_id' => 2,
-        'sensor_name' => 'Servo SG90(x12)',
-        'value' => '12.00',
-        'unit' => '',
-        'status' => 'online',
-        'created_at' => '2025-10-30 19:22:24'
-    ],
-    [
-        'id' => 4,
-        'user_id' => 2,
-        'sensor_name' => 'GPS NEO-6M',
-        'value' => '0.00',
-        'unit' => '',
-        'status' => 'warning',
-        'created_at' => '2025-10-30 19:22:24'
-    ],
-    [
-        'id' => 5,
-        'user_id' => 2,
-        'sensor_name' => 'Temperature DHT22',
-        'value' => '28.50',
-        'unit' => '°C',
-        'status' => 'online',
-        'created_at' => '2025-10-30 19:22:24'
-    ]
-];
+// Fetch all sensor logs (static template data, not user-specific)
+$sensors = $pdo->query("SELECT * FROM sensors_logs ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -90,11 +54,22 @@ $sensors = [
         th, td { padding: 10px; text-align: left; border-bottom: 1px solid rgba(255,215,0,0.3); }
         th { background: rgba(255,215,0,0.1); color: #FFD700; }
         .status-online { background: #4CAF50; width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 10px #00ff88;}
+        .status-offline { background: #ff2626ff; width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 10px #ff2626ff;}
         .status-warning { background: #FF9800; width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 10px #ffaa00;}
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: -1;
+        }
         @media (max-width: 768px) { .dashboard-wrapper { flex-direction: column; } .sidebar { width: 100%; } }
     </style>
 </head>
 <body>
+    <div class="overlay"></div>
     <div class="dashboard-wrapper">
         <nav class="sidebar">
             <h3>Data Sensor PBL</h3>
@@ -107,11 +82,14 @@ $sensors = [
         <main class="main-content">
             <header class="header">
                 <h1>Log Data Sensor</h1>
-                <p>Seluruh riwayat sensor (data dummy standar)</p>
+                <p>Seluruh riwayat sensor (data template standar)</p>
             </header>
 
             <section class="content-card">
                 <h2>Tabel Log Sensor</h2>
+                <?php if (empty($sensors)): ?>
+                    <p style="text-align: center; color: #fff;">Belum ada data sensor. Tambahkan melalui admin atau simulasi.</p>
+                <?php else: ?>
                 <table>
                     <thead>
                         <tr>
@@ -136,6 +114,7 @@ $sensors = [
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+                <?php endif; ?>
             </section>
         </main>
     </div>

@@ -53,10 +53,20 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
         .link { text-align: center; margin-top: 20px; }
         .link a { color: #FFD700; text-decoration: none; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
         .link a:hover { text-decoration: underline; }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: -1;
+        }
         @media (max-width: 480px) { .login-container { padding: 30px 20px; } h2 { font-size: 26px; } #errorPopup, #successPopup { width: 90%; padding: 15px; } }
     </style>
 </head>
 <body>
+    <div class="overlay"></div>
     <div id="overlay"></div>
     <div id="errorPopup">
         <p id="errorMessage"></p>
