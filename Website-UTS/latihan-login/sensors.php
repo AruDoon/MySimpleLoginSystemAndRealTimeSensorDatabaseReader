@@ -28,6 +28,7 @@ function getStatusIndicator($status) {
 // Fetch all sensor logs (static template data, not user-specific)
 $sensors = $pdo->query("SELECT * FROM sensors_logs ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>

@@ -125,6 +125,19 @@ if ($_POST) {
                 <h1>Manajemen Pengguna</h1>
                 <p>Kelola akun user</p>
             </header>
+
+            <section class="content-card"> 
+                <h2>Website Barelang F-1 Aldon</h2>
+                <p>
+                    Ini adalah aplikasi website buatan "Aldon Zufar Putra T." yang dimana website ini berfungsi sebagai media pembelajaran bagaimana
+                    cara menggunakan bahasa .html dan .php yang berkerja sama untuk membuat sebuah website dengan sistem basic user - administrator.
+                </p>
+                <br>
+                <p>
+                    Website ini dibuat dengan tema "Barelang F-1" yang merupakan PBL saya di BRAIL Politeknik Negeri Batam.
+                </p>
+            </section>
+
  
             <section class="content-card">
                 <h2>Tabel Data User</h2>
